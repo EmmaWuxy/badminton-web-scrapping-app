@@ -36,11 +36,11 @@ for center in data['all']:
             #print('here')
             if header.find('span', string='Basketball', attrs={'class': 'coursetitlecol'}) is not None\
             and header.find('span', string=' (6 - 9yrs)', attrs= {'class': 'courseagecol'}) is not None :
-                print(ctr_soup.find('h1'))
-                print(ctr_soup.find('span', attrs={'class': 'badge'}))
-                print(ctr_soup.find('span', attrs={'class': 'addressbar'}).find('strong'))
+                print(ctr_soup.find('h1').text)
+                print(ctr_soup.find('span', attrs={'class': 'badge'}).text)
+                print(ctr_soup.find('span', attrs={'class': 'addressbar'}).find('strong').text)
                 for time in row.find_all('td', string = lambda s: len(s)>1, attrs={'class': 'coursehrscol'}):
-                    print(time)
+                    print(time.text)
                 break
 
 
