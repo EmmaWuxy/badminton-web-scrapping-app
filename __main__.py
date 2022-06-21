@@ -1,5 +1,7 @@
-import requests
 from bs4 import BeautifulSoup as bs
+from datetime import date
+import pandas as pd
+import requests
 
 # Ask for customer location
 #postal_code = input("Please Enter Your Postal Code: ")
@@ -28,21 +30,27 @@ for center in data['all']:
     except AttributeError:
         #print('skip')
         continue
-    #else:
-        #print('Did not skip')
+    
+    # Scrap dates of current week (Check if today is in week_days)
+    week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col') ][1:]
+    for day in week_days:
+        if date.today().strftime("%b %d") in day:
+            break
+    else:
+        continue
+
+    # Scrap data for each row
     for row in rows:
         header = row.find('th')
         if header is not None:
             #print('here')
             if header.find('span', string = 'Badminton', attrs = {'class': 'coursetitlecol'}) is not None\
             and header.find('span', string = ' (18yrs and over)' or ' (19yrs and over)', attrs = {'class': 'courseagecol'}) is not None :
-                # Scrap dates of current week
-                week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col') ][1:]
-
+                
                 # Scrap location and time
-                print(ctr_soup.find('h1').text.strip()) # Location
-                print(ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip()) # Address
-                print(ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text) # District
+                location_name = ctr_soup.find('h1').text.strip() # Location
+                addr = ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip() # Address
+                district = ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text # District
                 for count, time in enumerate(row.find_all('td', attrs = {'class': 'coursehrscol'})):
                     if len(time.text) > 1:
                         print(week_days[count]) # Date
