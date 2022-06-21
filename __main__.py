@@ -46,11 +46,8 @@ for center in data['all']:
                 print(ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text)
                 for count, time in enumerate(row.find_all('td', attrs = {'class': 'coursehrscol'})):
                     if len(time.text) > 1:
-                        print(week_days[count].text)
+                        print(week_days[count])
                         print(time.text)
-
-                    
-
                 break
 
 
