@@ -24,7 +24,8 @@ for center in data['all']:
     ctr_response = requests.get('https://www.toronto.ca/data/parks/prd/facilities/complex/' + str(center['ID']) + '/index.html')
     ctr_soup = bs(ctr_response.content, 'html.parser')
     try:
-        rows = ctr_soup.find('div',{'id': 'content_dropintype_Sports'}).find('table').find('tr', {'id':'dropin_Sports_0'}).find('tbody').find_all('tr')
+        data_curweek = ctr_soup.find('div',{'id': 'content_dropintype_Sports'}).find('table').find('tr', {'id':'dropin_Sports_0'})
+        rows = data_curweek.find('tbody').find_all('tr')
     except AttributeError:
         #print('skip')
         continue
@@ -36,11 +37,17 @@ for center in data['all']:
             #print('here')
             if header.find('span', string='Basketball', attrs={'class': 'coursetitlecol'}) is not None\
             and header.find('span', string=' (6 - 9yrs)', attrs= {'class': 'courseagecol'}) is not None :
+                # Scrap date of current week
+                week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col')][1:]
+                print(week_days)
+
+                # Scrap location and time
                 print(ctr_soup.find('h1').text)
                 print(ctr_soup.find('span', attrs={'class': 'badge'}).text)
                 print(ctr_soup.find('span', attrs={'class': 'addressbar'}).find('strong').text)
                 for time in row.find_all('td', string = lambda s: len(s)>1, attrs={'class': 'coursehrscol'}):
                     print(time.text)
+
                 break
 
 
