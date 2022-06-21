@@ -35,18 +35,21 @@ for center in data['all']:
         header = row.find('th')
         if header is not None:
             #print('here')
-            if header.find('span', string='Basketball', attrs={'class': 'coursetitlecol'}) is not None\
-            and header.find('span', string=' (6 - 9yrs)', attrs= {'class': 'courseagecol'}) is not None :
-                # Scrap date of current week
-                week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col')][1:]
-                print(week_days)
+            if header.find('span', string = 'Basketball', attrs = {'class': 'coursetitlecol'}) is not None\
+            and header.find('span', string = ' (6 - 9yrs)', attrs = {'class': 'courseagecol'}) is not None :
+                # Scrap dates of current week
+                week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col') ][1:]
 
                 # Scrap location and time
                 print(ctr_soup.find('h1').text)
-                print(ctr_soup.find('span', attrs={'class': 'badge'}).text)
-                print(ctr_soup.find('span', attrs={'class': 'addressbar'}).find('strong').text)
-                for time in row.find_all('td', string = lambda s: len(s)>1, attrs={'class': 'coursehrscol'}):
-                    print(time.text)
+                print(ctr_soup.find('span', attrs = {'class': 'badge'}).text)
+                print(ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text)
+                for count, time in enumerate(row.find_all('td', attrs = {'class': 'coursehrscol'})):
+                    if len(time.text) > 1:
+                        print(week_days[count].text)
+                        print(time.text)
+
+                    
 
                 break
 
