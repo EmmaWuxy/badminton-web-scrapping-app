@@ -60,7 +60,7 @@ for center in data['all']:
                         df.loc[location_name,[week_days[count]]] = time.text
                     else:
                         df.loc[location_name,[week_days[count]]] = 'NA'
-
                 break
-print(df.to_string)
 
+# Convert to Excel
+df.to_excel('output.xls')
