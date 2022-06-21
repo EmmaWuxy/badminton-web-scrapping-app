@@ -13,7 +13,6 @@ headers = {
 url = 'https://www.toronto.ca/data/parks/live/locations/centres.json?_=1655614708813'
 
 response = requests.get(url, headers=headers)
-print(response)
 if response.status_code != 200:
     print("Web Page Not Accessible.")
     quit()
@@ -35,30 +34,19 @@ for center in data['all']:
         header = row.find('th')
         if header is not None:
             #print('here')
-            if header.find('span', string = 'Basketball', attrs = {'class': 'coursetitlecol'}) is not None\
-            and header.find('span', string = ' (6 - 9yrs)', attrs = {'class': 'courseagecol'}) is not None :
+            if header.find('span', string = 'Badminton', attrs = {'class': 'coursetitlecol'}) is not None\
+            and header.find('span', string = ' (18yrs and over)' or ' (19yrs and over)', attrs = {'class': 'courseagecol'}) is not None :
                 # Scrap dates of current week
                 week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col') ][1:]
 
                 # Scrap location and time
-                print(ctr_soup.find('h1').text)
-                print(ctr_soup.find('span', attrs = {'class': 'badge'}).text)
-                print(ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text)
+                print(ctr_soup.find('h1').text.strip()) # Location
+                print(ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip()) # Address
+                print(ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text) # District
                 for count, time in enumerate(row.find_all('td', attrs = {'class': 'coursehrscol'})):
                     if len(time.text) > 1:
-                        print(week_days[count])
-                        print(time.text)
+                        print(week_days[count]) # Date
+                        print(time.text) # Time
                 break
-
-
-#soup = bs(data['all'])
-#print(soup)
-#links = soup.findAll('a')
-#for link in links:
-#    print(link.text)
-
-# Web scraping Logic
- # Get a list of ID's
- # Create for loop to get the ID
 
 # Convert to Excel
