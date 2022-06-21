@@ -1,3 +1,4 @@
+from doctest import FAIL_FAST
 from bs4 import BeautifulSoup as bs
 from datetime import date
 import pandas as pd
@@ -20,6 +21,7 @@ if response.status_code != 200:
     quit()
 
 data = response.json()
+df = None
 # Query each center page
 for center in data['all']:
     ctr_response = requests.get('https://www.toronto.ca/data/parks/prd/facilities/complex/' + str(center['ID']) + '/index.html')
@@ -30,12 +32,14 @@ for center in data['all']:
     except AttributeError:
         #print('skip')
         continue
-    
+
     # Scrap dates of current week (Check if today is in week_days)
     week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col') ][1:]
     for day in week_days:
         if date.today().strftime("%b %d") in day:
-            break
+            if df is None:
+                df = pd.DataFrame(columns = ['Address', 'District'] + week_days)
+            break 
     else:
         continue
 
@@ -49,12 +53,14 @@ for center in data['all']:
                 
                 # Scrap location and time
                 location_name = ctr_soup.find('h1').text.strip() # Location
-                addr = ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip() # Address
-                district = ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text # District
+                df.loc[location_name,['Address']] = ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip() # Address
+                df.loc[location_name,['District']] = ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text # District
                 for count, time in enumerate(row.find_all('td', attrs = {'class': 'coursehrscol'})):
                     if len(time.text) > 1:
-                        print(week_days[count]) # Date
-                        print(time.text) # Time
-                break
+                        df.loc[location_name,[week_days[count]]] = time.text
+                    else:
+                        df.loc[location_name,[week_days[count]]] = 'NA'
 
-# Convert to Excel
+                break
+print(df.to_string)
+
