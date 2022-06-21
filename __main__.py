@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 # Ask for customer location
-#postal_code = input("Please Enter Your Postal Code: ")
+postal_code = input("Please Enter Your Postal Code: ")
 
 # Get a list of recreation centers
 data_source = "https://www.toronto.ca/data/parks/prd/facilities/recreationcentres/index.html" # Put in config file 
