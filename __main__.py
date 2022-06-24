@@ -1,4 +1,3 @@
-from doctest import FAIL_FAST
 from bs4 import BeautifulSoup as bs
 from datetime import date
 import pandas as pd
