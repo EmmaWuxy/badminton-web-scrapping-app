@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 from datetime import date
+import os
 import pandas as pd
 import requests
 
@@ -21,6 +22,7 @@ if response.status_code != 200:
 
 data = response.json()
 df = None
+
 # Query each center page
 for center in data['all']:
     ctr_response = requests.get('https://www.toronto.ca/data/parks/prd/facilities/complex/' + str(center['ID']) + '/index.html')
@@ -46,7 +48,6 @@ for center in data['all']:
     for row in rows:
         header = row.find('th')
         if header is not None:
-            #print('here')
             if header.find('span', string = 'Badminton', attrs = {'class': 'coursetitlecol'}) is not None\
             and header.find('span', string = ' (18yrs and over)' or ' (19yrs and over)', attrs = {'class': 'courseagecol'}) is not None :
                 
@@ -60,6 +61,9 @@ for center in data['all']:
                     else:
                         df.loc[location_name,[week_days[count]]] = 'NA'
                 break
-
-# Convert to Excel
-df.to_excel('output.xls')
+try:
+    df.to_excel('output.xls')
+except PermissionError:
+    print('Permission error when trying to write to output.xls... It might be caused by output.xls open on your desktop.')
+else:
+    print('Work done successfully. Please view {} for results.'.format(os.getcwd() + '\output.xsl'))
