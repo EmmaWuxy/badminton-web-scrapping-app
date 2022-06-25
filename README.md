@@ -8,7 +8,8 @@ Compatible OS: Windows 10\
 Python 3.7.2\
 beautifulsoup4==4.11.1\
 pandas==0.25.1\
-requests==2.23.0
+requests==2.23.0\
+PySimpleGUI==4.60.1
 
 ## How to Run Code
 Install dependencies
@@ -20,7 +21,15 @@ Run application from CLI
 ~$ python badminton-web-scrapping-app
 ```
 ## Result Example Screenshot
-The result of running the application will be stored in output.xsl in your current working directory
+The result of running the application will be print out on GUI, and store in output.xsl in your current working directory.
+GUI
 <br>
-<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/BWSA-1-base-features/result_example.png"/>
+<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/main/gui_1.png"/>
+<br>
+<br>
+<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/main/gui_2.png"/>
+<br>
+output.xsl
+<br>
+<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/main/result_example.png"/>
 <br>
