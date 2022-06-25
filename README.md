@@ -8,7 +8,8 @@ Compatible OS: Windows 10\
 Python 3.7.2\
 beautifulsoup4==4.11.1\
 pandas==0.25.1\
-requests==2.23.0
+requests==2.23.0\
+PySimpleGUI==4.60.1
 
 ## How to Run Code
 Install dependencies
