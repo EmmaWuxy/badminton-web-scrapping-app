@@ -21,7 +21,15 @@ Run application from CLI
 ~$ python badminton-web-scrapping-app
 ```
 ## Result Example Screenshot
-The result of running the application will be stored in output.xsl in your current working directory
+The result of running the application will be print out on GUI, and store in output.xsl in your current working directory.
+GUI
 <br>
-<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/BWSA-1-base-features/result_example.png"/>
+<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/main/gui_1.png"/>
+<br>
+<br>
+<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/main/gui_2.png"/>
+<br>
+output.xsl
+<br>
+<img src="https://github.com/EmmaWuxy/badminton-web-scrapping-app/blob/main/result_example.png"/>
 <br>

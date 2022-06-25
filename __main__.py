@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 from datetime import date
+import os
 import pandas as pd
 import PySimpleGUI as sg
 import requests
