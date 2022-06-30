@@ -94,10 +94,13 @@ while True:
     elif event == 'SHOW TABLE':
         if geo_util.check_postal_code_format(user_postal) is False:
             window['INPUT_CHECK'].update('Invalid Postal Code! ex. H3G 5B4')
-            continue
+        elif num_display == '':
+            headings, table = get_badminton_centers()
+            create_output_table.create(headings, table, None)
+        elif num_display.isdigit() is False:
+            window['INPUT_CHECK'].update('Number much be positive integer!')
         else:
-            window['INPUT_CHECK'].update('Searching...')
-        headings, table = get_badminton_centers()
-        create_output_table.create(headings, table)
+            headings, table = get_badminton_centers()
+            create_output_table.create(headings, table, int(num_display))
 
 window.close()
