@@ -66,7 +66,7 @@ def get_badminton_centers():
                         else:
                             df.loc[location_name, [week_days[count]]] = 'NA'
                     break
-    df.sort_values('km')
+    df = df.sort_values('km', ascending=True)
 
     try:
         df.to_excel('output.xls')
@@ -80,16 +80,23 @@ def get_badminton_centers():
 
 sg.theme('DarkBlue3')
 sg.set_options(font=('Courier New',17))
-layout = [[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)], [sg.Button('SHOW TABLE')]]
-window = sg.Window('Badminton Web Scrapping App', layout, size = (400,150))
+layout = [[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)], 
+[sg.Text('Number of closest centers to display:')], [sg.Input(key = 'NUM_RECORDS', size = 14)], 
+[sg.Text(key = 'INPUT_CHECK')], [sg.Button('SHOW TABLE')]]
+window = sg.Window('Badminton Web Scrapping App', layout, size = (700,500))
 
 while True:
     event, values = window.read()
-    #print(values)
     user_postal = values['POSTAL_CODE']
+    num_display = values['NUM_RECORDS']
     if event is None:
         break
     elif event == 'SHOW TABLE':
+        if geo_util.check_postal_code_format(user_postal) is False:
+            window['INPUT_CHECK'].update('Invalid Postal Code! ex. H3G 5B4')
+            continue
+        else:
+            window['INPUT_CHECK'].update('Searching...')
         headings, table = get_badminton_centers()
         create_output_table.create(headings, table)
 
