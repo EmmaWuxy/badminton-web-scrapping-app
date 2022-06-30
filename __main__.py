@@ -80,10 +80,11 @@ def get_badminton_centers():
 
 sg.theme('DarkBlue3')
 sg.set_options(font=('Courier New',17))
-layout = [[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)], 
+layout = [[sg.Text('This app will display all recreation centers in Toronto that offers\nbadminton drop-in sessions that only open to adults in age group 18-60\nin the current week')],
+[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)], 
 [sg.Text('Number of closest centers to display:')], [sg.Input(key = 'NUM_RECORDS', size = 14)], 
 [sg.Text(key = 'INPUT_CHECK')], [sg.Button('SHOW TABLE')]]
-window = sg.Window('Badminton Web Scrapping App', layout, size = (700,500))
+window = sg.Window('Badminton Web Scrapping App', layout, size = (1000,500))
 
 while True:
     event, values = window.read()
