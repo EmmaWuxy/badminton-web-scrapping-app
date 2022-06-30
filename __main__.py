@@ -4,8 +4,8 @@ import os
 import pandas as pd
 import PySimpleGUI as sg
 import requests
-import create_output_table
-import geo_util
+from src.create_output_table import create_output_table
+from src.geo_util import geo_util
 
 def get_badminton_centers():
     # Ask for customer location
