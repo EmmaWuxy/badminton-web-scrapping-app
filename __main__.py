@@ -90,7 +90,7 @@ while True:
     event, values = window.read()
     user_postal = values['POSTAL_CODE']
     num_display = values['NUM_RECORDS']
-    if event is None:
+    if event == 'Exit' or event == sg.WIN_CLOSED or event is None:
         break
     elif event == 'SHOW TABLE':
         if geo_util.check_postal_code_format(user_postal) is False:
