@@ -88,11 +88,11 @@ window = sg.Window('Badminton Web Scrapping App', layout, size = (1000,500))
 
 while True:
     event, values = window.read()
-    user_postal = values['POSTAL_CODE']
-    num_display = values['NUM_RECORDS']
     if event == 'Exit' or event == sg.WIN_CLOSED or event is None:
         break
-    elif event == 'SHOW TABLE':
+    user_postal = values['POSTAL_CODE']
+    num_display = values['NUM_RECORDS']
+    if event == 'SHOW TABLE':
         if geo_util.check_postal_code_format(user_postal) is False:
             window['INPUT_CHECK'].update('Invalid Postal Code! ex. H3G 5B4')
         elif num_display == '':
