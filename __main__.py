@@ -4,8 +4,8 @@ import os
 import pandas as pd
 import PySimpleGUI as sg
 import requests
-
 import create_output_table
+import geo_util
 
 def get_badminton_centers():
     # Ask for customer location
@@ -39,16 +39,16 @@ def get_badminton_centers():
             continue
     
         # Scrap dates of current week (Check if today is in week_days)
-        week_days = [ day.text for day in data_curweek.find_all('th', scope = 'col') ][1:]
+        week_days = [ day.text.strip() for day in data_curweek.find_all('th', scope = 'col') ][1:]
         for day in week_days:
             if date.today().strftime("%b %d") in day:
                 if df is None:
-                    df = pd.DataFrame(columns = ['Address', 'District'] + week_days)
+                    df = pd.DataFrame(columns = ['Address', 'District', 'km'] + week_days)
                 break 
         else:
             continue
     
-        # Scrap data for each row
+        # Scrap data for each row in the table
         for row in rows:
             header = row.find('th')
             if header is not None:
@@ -57,14 +57,17 @@ def get_badminton_centers():
                     
                     # Scrap location and time
                     location_name = ctr_soup.find('h1').text.strip() # Location
-                    df.loc[location_name,['Address']] = ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip() # Address
-                    df.loc[location_name,['District']] = ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text # District
+                    df.loc[location_name, ['Address']] = ctr_soup.find('span', attrs = {'class': 'badge'}).find(text = True).strip()
+                    df.loc[location_name, ['District']] = ctr_soup.find('span', attrs = {'class': 'addressbar'}).find('strong').text
+                    df.loc[location_name, ['km']] = geo_util.get_interdistance(user_postal, geo_util.get_loc_postal_code(df.at[location_name, 'Address']))
                     for count, time in enumerate(row.find_all('td', attrs = {'class': 'coursehrscol'})):
                         if len(time.text) > 1:
-                            df.loc[location_name,[week_days[count]]] = time.text
+                            df.loc[location_name, [week_days[count]]] = time.text
                         else:
-                            df.loc[location_name,[week_days[count]]] = 'NA'
+                            df.loc[location_name, [week_days[count]]] = 'NA'
                     break
+    df.sort_values('km')
+
     try:
         df.to_excel('output.xls')
     except PermissionError:
@@ -77,12 +80,13 @@ def get_badminton_centers():
 
 sg.theme('DarkBlue3')
 sg.set_options(font=('Courier New',17))
-layout = [[sg.Text('Enter your postal code:')], [sg.Input(key = '-IN-', size = 14)], [sg.Button('SHOW TABLE')]]
+layout = [[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)], [sg.Button('SHOW TABLE')]]
 window = sg.Window('Badminton Web Scrapping App', layout, size = (400,150))
 
 while True:
     event, values = window.read()
-
+    #print(values)
+    user_postal = values['POSTAL_CODE']
     if event is None:
         break
     elif event == 'SHOW TABLE':
