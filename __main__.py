@@ -7,19 +7,14 @@ import requests
 import src.create_output_table as create_output_table
 import src.geo_util as geo_util
 
+week_dict = {'This Week': 0, 'Next Week': 1, 'Two Weeks From Now':2 }
+index_url = 'https://www.toronto.ca/data/parks/live/locations/centres.json?_=1655614708813'
+
 def get_badminton_centers(week_from_now:int):
-    # Ask for customer location
-    #postal_code = input("Please Enter Your Postal Code: ")
-    
-    # Get a list of recreation centers
-    data_source = "https://www.toronto.ca/data/parks/prd/facilities/recreationcentres/index.html" # Put in config file 
-    
-    headers = {
-        'X-Requested-With': 'XMLHttpRequest'
-    }
-    url = 'https://www.toronto.ca/data/parks/live/locations/centres.json?_=1655614708813'
-    
-    response = requests.get(url, headers=headers)
+
+    # Get a list of recreation centers   
+    headers = { 'X-Requested-With': 'XMLHttpRequest' }
+    response = requests.get(index_url, headers=headers)
     if response.status_code != 200:
         print("Web Page Not Accessible.")
         quit()
@@ -99,15 +94,15 @@ while True:
         if geo_util.postal_code_isvalid(user_postal) is False:
             window['INPUT_CHECK'].update('Invalid Postal Code! ex. H3G 5B4')
         elif num_display == '':
-            headings, table = get_badminton_centers()
+            headings, table = get_badminton_centers(week_dict[values['WEEK']])
             create_output_table.create(headings, table, None)
+            window['RESULT'].update('SUCCESS: Please see result in the table')
         elif num_display.isdigit() is False:
             window['INPUT_CHECK'].update('Number much be positive integer!')
         else:
-            window['RESULT'].update('Please wait....')
-            week_dict = {'This Week': 0, 'Next Week': 1, 'Two Weeks From Now':2 }
+            #window['RESULT'].update('Please wait....')
             headings, table = get_badminton_centers(week_dict[values['WEEK']])
             create_output_table.create(headings, table, int(num_display))
-            window['RESULT'].update('SUCCESS')
+            window['RESULT'].update('SUCCESS: Please see result in the table')
 
 window.close()
