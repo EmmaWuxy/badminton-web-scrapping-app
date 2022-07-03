@@ -84,7 +84,9 @@ layout = [[sg.Text('This app will display all recreation centers in Toronto that
 [sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)],
 [sg.Text('Display schedule of:')], [sg.Combo(['This Week', 'Next Week', 'Two Weeks From Now'], default_value='This Week', key='WEEK')],
 [sg.Text('Number of closest centers to display:')], [sg.Input(key = 'NUM_RECORDS', size = 14)], 
-[sg.Text(key = 'INPUT_CHECK',text_color='Red')], [sg.Button('SHOW TABLE')]]
+[sg.Text(key = 'INPUT_CHECK',text_color='Red')], 
+[sg.Button('SHOW TABLE')],
+[sg.Text(key = 'RESULT',text_color='Green')]]
 window = sg.Window('Badminton Web Scrapping App', layout, size = (1000,500))
 
 while True:
@@ -94,7 +96,7 @@ while True:
     user_postal = values['POSTAL_CODE']
     num_display = values['NUM_RECORDS']
     if event == 'SHOW TABLE':
-        if geo_util.check_postal_code_format(user_postal) is False:
+        if geo_util.postal_code_isvalid(user_postal) is False:
             window['INPUT_CHECK'].update('Invalid Postal Code! ex. H3G 5B4')
         elif num_display == '':
             headings, table = get_badminton_centers()
@@ -102,8 +104,10 @@ while True:
         elif num_display.isdigit() is False:
             window['INPUT_CHECK'].update('Number much be positive integer!')
         else:
+            window['RESULT'].update('Please wait....')
             week_dict = {'This Week': 0, 'Next Week': 1, 'Two Weeks From Now':2 }
             headings, table = get_badminton_centers(week_dict[values['WEEK']])
             create_output_table.create(headings, table, int(num_display))
+            window['RESULT'].update('SUCCESS')
 
 window.close()
