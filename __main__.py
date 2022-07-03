@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup as bs
-from datetime import date
+from datetime import date, timedelta
 import os
 import pandas as pd
 import PySimpleGUI as sg
 import requests
-from src.create_output_table import create_output_table
-from src.geo_util import geo_util
+import src.create_output_table as create_output_table
+import src.geo_util as geo_util
 
-def get_badminton_centers():
+def get_badminton_centers(week_from_now:int):
     # Ask for customer location
     #postal_code = input("Please Enter Your Postal Code: ")
     
@@ -32,7 +32,7 @@ def get_badminton_centers():
         ctr_response = requests.get('https://www.toronto.ca/data/parks/prd/facilities/complex/' + str(center['ID']) + '/index.html')
         ctr_soup = bs(ctr_response.content, 'html.parser')
         try:
-            data_curweek = ctr_soup.find('div',{'id': 'content_dropintype_Sports'}).find('table').find('tr', {'id':'dropin_Sports_0'})
+            data_curweek = ctr_soup.find('div',{'id': 'content_dropintype_Sports'}).find('table').find('tr', {'id':'dropin_Sports_' + str(week_from_now)})
             rows = data_curweek.find('tbody').find_all('tr')
         except AttributeError:
             #print('skip')
@@ -41,7 +41,7 @@ def get_badminton_centers():
         # Scrap dates of current week (Check if today is in week_days)
         week_days = [ day.text.strip() for day in data_curweek.find_all('th', scope = 'col') ][1:]
         for day in week_days:
-            if date.today().strftime("%b %d") in day:
+            if (date.today() + timedelta(days=7*week_from_now)).strftime("%b %d") in day:
                 if df is None:
                     df = pd.DataFrame(columns = ['Address', 'District', 'km'] + week_days)
                 break 
@@ -81,7 +81,8 @@ def get_badminton_centers():
 sg.theme('DarkBlue3')
 sg.set_options(font=('Courier New',17))
 layout = [[sg.Text('This app will display all recreation centers in Toronto that offers\nbadminton drop-in sessions that only open to adults in age group 18-60\nin the current week',text_color='Black')],
-[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)], 
+[sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)],
+[sg.Text('Display schedule of:')], [sg.Combo(['This Week', 'Next Week', 'Two Weeks From Now'], default_value='This Week', key='WEEK')],
 [sg.Text('Number of closest centers to display:')], [sg.Input(key = 'NUM_RECORDS', size = 14)], 
 [sg.Text(key = 'INPUT_CHECK',text_color='Red')], [sg.Button('SHOW TABLE')]]
 window = sg.Window('Badminton Web Scrapping App', layout, size = (1000,500))
@@ -101,7 +102,8 @@ while True:
         elif num_display.isdigit() is False:
             window['INPUT_CHECK'].update('Number much be positive integer!')
         else:
-            headings, table = get_badminton_centers()
+            week_dict = {'This Week': 0, 'Next Week': 1, 'Two Weeks From Now':2 }
+            headings, table = get_badminton_centers(week_dict[values['WEEK']])
             create_output_table.create(headings, table, int(num_display))
 
 window.close()
