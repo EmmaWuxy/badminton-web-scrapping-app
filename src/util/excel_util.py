@@ -2,6 +2,7 @@ import os
 import pandas as pd
 
 def generate_excel(df, file_name):
+    ''' Generate an excel file in current working directory'''
     try:
         df.to_excel(file_name)
     except PermissionError:

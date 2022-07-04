@@ -1,5 +1,8 @@
 import requests
 def web_request(url, headers):
+    ''' Generate a web request. 
+    If any connction error happens, try to connect again. Raise an exception after the 5th attempt.
+    '''
     # Try to connct 5 times upon connection error
     for i in range(5):
         try:
