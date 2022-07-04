@@ -13,6 +13,7 @@ def get_address_postal_code(address:str)->str:
     return str(g.postal)
 
 def postal_code_isvalid(postal_code:str)->bool:
+    ''' Validate if input is a valid canadian postal code '''
     if re.match(r'\b(?!.{0,7}[DFIOQU])[A-VXY]\d[A-Z][^-\w\d]\d[A-Z]\d\b',postal_code):
         return True
     return False
