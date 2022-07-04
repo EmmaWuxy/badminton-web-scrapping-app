@@ -10,21 +10,30 @@ import src.geo_util as geo_util
 week_dict = {'This Week': 0, 'Next Week': 1, 'Two Weeks From Now':2 }
 index_url = 'https://www.toronto.ca/data/parks/live/locations/centres.json?_=1655614708813'
 
+def web_request(url, headers):
+    # Try to connct 5 times upon connection error
+    for i in range(5):
+        try:
+            response = requests.get(url, headers)
+            break
+        except requests.exceptions.RequestException as e:
+            continue
+        
+    if response is None or response.status_code != 200:
+        raise e
+    return response
+
 def get_badminton_centers(week_from_now:int):
 
     # Get a list of recreation centers   
     headers = { 'X-Requested-With': 'XMLHttpRequest' }
-    response = requests.get(index_url, headers=headers)
-    if response.status_code != 200:
-        print("Web Page Not Accessible.")
-        quit()
-    
+    response = web_request(index_url, headers)
     data = response.json()
     df = None
     
     # Query each center page
     for center in data['all']:
-        ctr_response = requests.get('https://www.toronto.ca/data/parks/prd/facilities/complex/' + str(center['ID']) + '/index.html')
+        ctr_response = web_request('https://www.toronto.ca/data/parks/prd/facilities/complex/' + str(center['ID']) + '/index.html', None)
         ctr_soup = bs(ctr_response.content, 'html.parser')
         try:
             data_curweek = ctr_soup.find('div',{'id': 'content_dropintype_Sports'}).find('table').find('tr', {'id':'dropin_Sports_' + str(week_from_now)})
@@ -101,7 +110,11 @@ while True:
             window['INPUT_CHECK'].update('Number much be positive integer!')
         else:
             #window['RESULT'].update('Please wait....')
-            headings, table = get_badminton_centers(week_dict[values['WEEK']])
+            try:
+                headings, table = get_badminton_centers(week_dict[values['WEEK']])
+            except requests.exceptions.RequestException:
+                sg.popup('Connection Error. Please try again')
+                continue
             create_output_table.create(headings, table, int(num_display))
             window['RESULT'].update('SUCCESS: Please see result in the table')
 
