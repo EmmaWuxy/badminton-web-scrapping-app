@@ -4,3 +4,4 @@ pandas==0.25.1
 requests==2.23.0
 PySimpleGUI==4.60.1
 pgeocode==0.3.0
+geocoder==1.38.1
