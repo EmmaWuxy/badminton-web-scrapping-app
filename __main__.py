@@ -23,7 +23,7 @@ def web_request(url, headers):
         raise e
     return response
 
-def get_badminton_centers(week_from_now:int):
+def get_badminton_centers(week_from_now:int, ouput_excel:bool):
 
     # Get a list of recreation centers   
     headers = { 'X-Requested-With': 'XMLHttpRequest' }
@@ -72,12 +72,13 @@ def get_badminton_centers(week_from_now:int):
                     break
     df = df.sort_values('km', ascending=True)
 
-    try:
-        df.to_excel('output.xls')
-    except PermissionError:
-        print('Permission error when trying to write to output.xls... It might be caused by output.xls open on your desktop.')
-    else:
-        print('Work done successfully. Please view {} for results.'.format(os.getcwd() + '\output.xsl'))
+    if ouput_excel:
+        try:
+            df.to_excel('output.xls')
+        except PermissionError:
+            print('Permission error when trying to write to output.xls... It might be caused by output.xls open on your desktop.')
+        else:
+            print('Work done successfully. Please view {} for results.'.format(os.getcwd() + '\output.xsl'))
 
     return ['Recreation Center'] + df.columns.values.tolist(), [[df.index.tolist()[i]] + r for i, r in enumerate(df.values.tolist())]
 
@@ -88,9 +89,10 @@ layout = [[sg.Text('This app will display all recreation centers in Toronto that
 [sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)],
 [sg.Text('Display schedule of:')], [sg.Combo(['This Week', 'Next Week', 'Two Weeks From Now'], default_value='This Week', key='WEEK')],
 [sg.Text('Number of closest centers to display:')], [sg.Input(key = 'NUM_RECORDS', size = 14)], 
+[sg.Checkbox('Export result to Excel file in current working directory', default=False, key='EXCEL')],
 [sg.Text(key = 'INPUT_CHECK',text_color='Red')], 
 [sg.Button('SHOW TABLE')],
-[sg.Text(key = 'RESULT',text_color='Green')]]
+[sg.Text(key = 'RESULT',text_color='BLACK')]]
 window = sg.Window('Badminton Web Scrapping App', layout, size = (1000,500))
 
 while True:
@@ -103,7 +105,7 @@ while True:
         if geo_util.postal_code_isvalid(user_postal) is False:
             window['INPUT_CHECK'].update('Invalid Postal Code! ex. H3G 5B4')
         elif num_display == '':
-            headings, table = get_badminton_centers(week_dict[values['WEEK']])
+            headings, table = get_badminton_centers(week_dict[values['WEEK']], values['EXCEL'])
             create_output_table.create(headings, table, None)
             window['RESULT'].update('SUCCESS: Please see result in the table')
         elif num_display.isdigit() is False:
@@ -111,11 +113,11 @@ while True:
         else:
             #window['RESULT'].update('Please wait....')
             try:
-                headings, table = get_badminton_centers(week_dict[values['WEEK']])
+                headings, table = get_badminton_centers(week_dict[values['WEEK']], values['EXCEL'])
             except requests.exceptions.RequestException:
                 sg.popup('Connection Error. Please try again')
                 continue
-            create_output_table.create(headings, table, int(num_display))
-            window['RESULT'].update('SUCCESS: Please see result in the table')
+            create_output_table.create(headings, table, int(num_display), values['EXCEL'])
+            window['RESULT'].update('SUCCESS: Please see result in the table')           
 
 window.close()
