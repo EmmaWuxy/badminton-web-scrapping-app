@@ -16,7 +16,7 @@ geocoder==1.38.1
 ## How to Run Code
 Install dependencies
 ```
-~$ pip install -r badminton-web-scrapping-app/requirements.txt
+~$ pip3 install -r badminton-web-scrapping-app/requirements.txt
 ```
 Run application from CLI
 ```
