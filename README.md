@@ -1,5 +1,7 @@
 # badminton-web-scrapping-app
-A simple Web Scraping App that scraps all the recreation centers in Toronto that offers badminton drop-in sessions for adults in age group 18-60. User can choose the week to search, the number of records to display, and has the option to store result in Excel file output.xls in current working directory. The app will output a table that contains recreation center's name, address, district, available session dates and time, ordered by geographical distance from user's input postal code.
+A simple Web Scraping App that scraps all the recreation centers in Toronto that offers badminton drop-in sessions for adults in age group 18-60. User can choose the week to search, the number of records to display, and has the option to store result in an Excel file output.xls in current working directory. The app will output a table that contains recreation center's name, address, district, available session dates and time, ordered by geographical distance from user's input postal code.
+
+The time it takes to scrape web results will normally be around 1 minutes, might vary upon conditions.
 
 Data source: latest data posted by Toronto Park on their website : https://www.toronto.ca/data/parks/prd/facilities/recreationcentres/index.html 
 
@@ -16,7 +18,7 @@ geocoder==1.38.1
 ## How to Run Code
 Install dependencies
 ```
-~$ pip install -r badminton-web-scrapping-app/requirements.txt
+~$ pip3 install -r badminton-web-scrapping-app/requirements.txt
 ```
 Run application from CLI
 ```
