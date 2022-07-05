@@ -67,7 +67,7 @@ def get_badminton_centers(user_postal, index_url, week_from_now:int, ouput_excel
 def create(index_url, week_dict):
     sg.theme('DarkBlue3')
     sg.set_options(font=('Courier New',17))
-    layout = [[sg.Text('This app will display all recreation centers in Toronto that offers\nbadminton drop-in sessions that only open to adults in age group 18-60\nin the current week',text_color='Black')],
+    layout = [[sg.Text('This app will display all recreation centers in Toronto that offers\nbadminton drop-in sessions that only open to adults in age group 18-60 \nin the current week',text_color='Black')],
     [sg.Text('Enter your postal code:')], [sg.Input(key = 'POSTAL_CODE', size = 14)],
     [sg.Text('Display schedule of:')], [sg.Combo(['This Week', 'Next Week', 'Two Weeks From Now'], default_value='This Week', key='WEEK')],
     [sg.Text('Number of closest centers to display:')], [sg.Input(key = 'NUM_RECORDS', size = 14)], 
@@ -75,7 +75,7 @@ def create(index_url, week_dict):
     [sg.Text(key = 'INPUT_CHECK',text_color='Red')], 
     [sg.Button('SHOW TABLE')],
     [sg.Text(key = 'RESULT',text_color='BLACK')]]
-    window = sg.Window('Badminton Web Scrapping App', layout, size = (1000,500))
+    window = sg.Window('Badminton Web Scrapping App', layout, size = (1010,500))
 
     while True:
         event, values = window.read()
